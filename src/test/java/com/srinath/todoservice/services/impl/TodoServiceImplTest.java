@@ -42,6 +42,7 @@ public class TodoServiceImplTest {
         todo = Todo.builder()
                 .id(UUID.randomUUID())
                 .description("Test Description")
+                .status(TodoStatus.NOT_DONE)
                 .createdAt(now)
                 .dueDate(futureDate)
                 .build();
