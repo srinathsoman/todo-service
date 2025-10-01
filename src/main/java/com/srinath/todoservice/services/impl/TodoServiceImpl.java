@@ -3,6 +3,8 @@ package com.srinath.todoservice.services.impl;
 import com.srinath.todoservice.dtos.TodoDetails;
 import com.srinath.todoservice.entities.Todo;
 import com.srinath.todoservice.enums.TodoStatus;
+import com.srinath.todoservice.exceptions.InvalidParameterException;
+import com.srinath.todoservice.exceptions.statuscodes.StatusCodes;
 import com.srinath.todoservice.repositories.TodoRepository;
 import com.srinath.todoservice.requests.CreateTodoRequest;
 import com.srinath.todoservice.services.TodoService;
@@ -23,15 +25,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoDetails createTodoItem(CreateTodoRequest createTodoRequest) {
-        if (createTodoRequest.getDescription() == null ||
-                createTodoRequest.getDescription().trim().isEmpty()) {
-            throw new IllegalArgumentException("Description must not be empty");
-        }
-
-        if (createTodoRequest.getDueDate() == null ||
-                createTodoRequest.getDueDate().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Due date must not be in the past");
-        }
+        validateCreateRequest(createTodoRequest);
         Todo newTodo= Todo.builder()
                 .description(createTodoRequest.getDescription())
                 .createdAt(LocalDateTime.now())
@@ -40,5 +34,17 @@ public class TodoServiceImpl implements TodoService {
                 .build();
         newTodo =todoRepository.save(newTodo);
         return TodoDetails.fromEntity(newTodo);
+    }
+
+    private void validateCreateRequest(CreateTodoRequest createTodoRequest){
+        if (createTodoRequest.getDescription() == null ||
+                createTodoRequest.getDescription().trim().isEmpty()) {
+            throw new InvalidParameterException(StatusCodes.DESCRIPTION_NOT_EMPTY);
+        }
+
+        if (createTodoRequest.getDueDate() == null ||
+                createTodoRequest.getDueDate().isBefore(LocalDateTime.now())) {
+            throw new InvalidParameterException(StatusCodes.DUE_DATE_CANNOT_BE_PAST);
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.srinath.todoservice.services.impl;
 import com.srinath.todoservice.dtos.TodoDetails;
 import com.srinath.todoservice.entities.Todo;
 import com.srinath.todoservice.enums.TodoStatus;
+import com.srinath.todoservice.exceptions.InvalidParameterException;
 import com.srinath.todoservice.repositories.TodoRepository;
 import com.srinath.todoservice.requests.CreateTodoRequest;
 import com.srinath.todoservice.services.TodoService;
@@ -68,7 +69,7 @@ public class TodoServiceImplTest {
         CreateTodoRequest invalidRequest = new CreateTodoRequest(
                 "",  futureDate);
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(InvalidParameterException.class, () -> {
             todoService.createTodoItem(invalidRequest);
         });
     }
@@ -79,7 +80,7 @@ public class TodoServiceImplTest {
         CreateTodoRequest invalidRequest = new CreateTodoRequest(
                 "Valid description", pastDate);
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(InvalidParameterException.class, () -> {
             todoService.createTodoItem(invalidRequest);
         });
     }
