@@ -19,8 +19,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -127,4 +126,59 @@ class TodoControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void testMarkTodoAsDone_Success() throws Exception {
+        mockMvc.perform(patch("/api/v1/todo/{id}/done", testTodo.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("done")))
+                .andExpect(jsonPath("$.completedAt", notNullValue()));
+    }
+
+    @Test
+    void testMarkTodoAsDone_PastDue() throws Exception {
+
+        Todo pastDueTodo = Todo.builder()
+                .description("Test Description")
+                .status(TodoStatus.PAST_DUE)
+                .createdAt(LocalDateTime.now().minusDays(1))
+                .dueDate(futureDate)
+                .build();
+        pastDueTodo = todoRepository.save(pastDueTodo);
+
+        mockMvc.perform(patch("/api/v1/todo/{id}/done", pastDueTodo.getId()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("past due")));
+    }
+
+    @Test
+    void testMarkTodoAsNotDone_Success() throws Exception {
+
+        testTodo.setStatus(TodoStatus.DONE);
+        todoRepository.save(testTodo);
+
+        mockMvc.perform(patch("/api/v1/todo/{id}/not-done", testTodo.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("not done")))
+                .andExpect(jsonPath("$.completedAt", nullValue()));
+    }
+
+
+    @Test
+    void testMarkTodoAsNotDone_PastDue() throws Exception {
+
+        Todo pastDueTodo = Todo.builder()
+                .description("Test Description")
+                .status(TodoStatus.PAST_DUE)
+                .createdAt(LocalDateTime.now().minusDays(1))
+                .dueDate(futureDate)
+                .build();
+        pastDueTodo = todoRepository.save(pastDueTodo);
+
+        mockMvc.perform(patch("/api/v1/todo/{id}/not-done", pastDueTodo.getId()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("past due")));
+    }
+
+
 }

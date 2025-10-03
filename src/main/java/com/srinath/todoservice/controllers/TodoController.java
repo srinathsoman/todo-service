@@ -30,4 +30,14 @@ public class TodoController {
                                              @RequestBody @Valid UpdateTodoRequest updateTodoRequest) {
         return todoService.updateTodoDescription(id, updateTodoRequest);
     }
+
+    @PatchMapping("/{id}/done")
+    public TodoDetails markTodoAsDone(@PathVariable UUID id){
+        return null;
+    }
+
+    @PatchMapping("/{id}/not-done")
+    public TodoDetails markTodoAsNotDone(@PathVariable UUID id){
+        return null;
+    }
 }

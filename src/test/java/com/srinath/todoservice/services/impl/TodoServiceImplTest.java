@@ -136,4 +136,53 @@ public class TodoServiceImplTest {
         verify(todoRepository, never()).save(any(Todo.class));
     }
 
+    @Test
+    void testMarkTodoAsDone_Success() {
+        //Arrange
+        when(todoRepository.findById(any(UUID.class))).thenReturn(Optional.of(todo));
+        when(todoRepository.save(any(Todo.class))).thenReturn(todo);
+
+        //Act
+        TodoDetails response = todoService.markTodoAsDone(todo.getId());
+        //Assert
+        assertNotNull(response);
+        verify(todoRepository).findById(todo.getId());
+        verify(todoRepository).save(todo);
+    }
+
+    @Test
+    void testMarkTodoAsDone_CannotBeModified() {
+        todo.setStatus(TodoStatus.PAST_DUE);
+        when(todoRepository.findById(any(UUID.class))).thenReturn(Optional.of(todo));
+
+        assertThrows(TodoCannotBeModifiedException.class,
+                () -> todoService.markTodoAsDone(todo.getId()));
+        verify(todoRepository).findById(todo.getId());
+        verify(todoRepository, never()).save(any(Todo.class));
+    }
+
+    @Test
+    void testMarkTodoAsNotDone_Success() {
+        todo.setStatus(TodoStatus.DONE);
+        when(todoRepository.findById(any(UUID.class))).thenReturn(Optional.of(todo));
+        when(todoRepository.save(any(Todo.class))).thenReturn(todo);
+
+        TodoDetails response = todoService.markTodoAsNotDone(todo.getId());
+
+        assertNotNull(response);
+        verify(todoRepository).findById(todo.getId());
+        verify(todoRepository).save(todo);
+    }
+
+    @Test
+    void testMarkTodoAsNotDone_CannotBeModified() {
+        todo.setStatus(TodoStatus.PAST_DUE);
+        when(todoRepository.findById(any(UUID.class))).thenReturn(Optional.of(todo));
+
+        assertThrows(TodoCannotBeModifiedException.class,
+                () -> todoService.markTodoAsNotDone(todo.getId()));
+        verify(todoRepository).findById(todo.getId());
+        verify(todoRepository, never()).save(any(Todo.class));
+    }
+
 }

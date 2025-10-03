@@ -53,6 +53,16 @@ public class TodoServiceImpl implements TodoService {
         return TodoDetails.fromEntity(currentTodo);
     }
 
+    @Override
+    public TodoDetails markTodoAsDone(UUID id) {
+        return null;
+    }
+
+    @Override
+    public TodoDetails markTodoAsNotDone(UUID id) {
+        return null;
+    }
+
     private void validateCreateRequest(CreateTodoRequest createTodoRequest){
         if (createTodoRequest.getDescription() == null ||
                 createTodoRequest.getDescription().trim().isEmpty()) {

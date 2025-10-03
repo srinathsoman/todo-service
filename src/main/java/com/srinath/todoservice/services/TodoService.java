@@ -9,6 +9,8 @@ import java.util.UUID;
 public interface TodoService {
 
     TodoDetails createTodoItem(CreateTodoRequest createTodoRequest);
-
     TodoDetails updateTodoDescription(UUID id, UpdateTodoRequest updateTodoRequest);
+    TodoDetails markTodoAsDone(UUID id);
+    TodoDetails markTodoAsNotDone(UUID id);
+
 }
