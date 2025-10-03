@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,6 +72,11 @@ public class TodoServiceImpl implements TodoService {
         }
         //If item is already in desired state. Return gracefully without throwing error
         return TodoDetails.fromEntity(currentTodo);
+    }
+
+    @Override
+    public List<TodoDetails> getAllTodos(Boolean includeAll) {
+        return List.of();
     }
 
     private void validateCreateRequest(CreateTodoRequest createTodoRequest){

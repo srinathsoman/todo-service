@@ -191,5 +191,40 @@ class TodoControllerTest {
                 .andExpect(content().string(containsString("Past due")));
     }
 
+    @Test
+    void testGetAllTodos_NotDoneOnly() throws Exception {
+
+        Todo doneTodo = Todo.builder()
+                .description("Test Description")
+                .status(TodoStatus.DONE)
+                .createdAt(LocalDateTime.now())
+                .dueDate(futureDate)
+                .build();
+        todoRepository.save(doneTodo);
+        testTodo = todoRepository.save(testTodo);
+
+        mockMvc.perform(get("/api/v1/todo"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(testTodo.getId())))
+                .andExpect(jsonPath("$[0].status", is("not done")));
+    }
+
+    @Test
+    void testGetAllTodos_IncludeAll() throws Exception {
+
+        Todo doneTodo = Todo.builder()
+                .description("Test Description")
+                .status(TodoStatus.DONE)
+                .createdAt(LocalDateTime.now())
+                .dueDate(futureDate)
+                .build();
+        doneTodo = todoRepository.save(doneTodo);
+        testTodo = todoRepository.save(testTodo);
+
+        mockMvc.perform(get("/api/v1/todo"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
 
 }

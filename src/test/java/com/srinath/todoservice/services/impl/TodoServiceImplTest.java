@@ -17,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -187,6 +189,30 @@ public class TodoServiceImplTest {
                 () -> todoService.markTodoAsNotDone(todo.getId()));
         verify(todoRepository).findById(todo.getId());
         verify(todoRepository, never()).save(any(Todo.class));
+    }
+
+    @Test
+    void testGetAllTodos_IncludeAllFalse() {
+        List<Todo> todos = Arrays.asList(todo);
+        when(todoRepository.findAllByStatus(TodoStatus.NOT_DONE)).thenReturn(todos);
+
+        List<TodoDetails> response = todoService.getAllTodos(false);
+
+        assertEquals(1, response.size());
+        assertEquals(todo.getId(), response.get(0).id());
+        verify(todoRepository).findAllByStatus(TodoStatus.NOT_DONE);
+    }
+
+    @Test
+    void testGetAllTodos_IncludeAllTrue() {
+        List<Todo> todos = Arrays.asList(todo);
+        when(todoRepository.findAllByStatus(TodoStatus.DONE)).thenReturn(todos);
+
+        List<TodoDetails> response = todoService.getAllTodos(true);
+
+        assertEquals(1, response.size());
+        assertEquals(todo.getId(), response.get(0).id());
+        verify(todoRepository).findAllByStatus(TodoStatus.DONE);
     }
 
 }
