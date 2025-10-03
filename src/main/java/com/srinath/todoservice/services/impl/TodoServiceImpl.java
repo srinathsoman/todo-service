@@ -4,6 +4,8 @@ import com.srinath.todoservice.dtos.TodoDetails;
 import com.srinath.todoservice.entities.Todo;
 import com.srinath.todoservice.enums.TodoStatus;
 import com.srinath.todoservice.exceptions.InvalidParameterException;
+import com.srinath.todoservice.exceptions.TodoCannotBeModifiedException;
+import com.srinath.todoservice.exceptions.TodoNotFoundException;
 import com.srinath.todoservice.exceptions.statuscodes.StatusCodes;
 import com.srinath.todoservice.repositories.TodoRepository;
 import com.srinath.todoservice.requests.CreateTodoRequest;
@@ -16,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,7 +43,18 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoDetails updateTodoDescription(UUID id, UpdateTodoRequest updateTodoRequest) {
-        return null;
+        Optional<Todo> todoOptional = todoRepository.findById(id);
+        if(todoOptional.isEmpty()){
+            throw new TodoNotFoundException(StatusCodes.TODO_NOT_FOUND);
+        }
+        Todo currentTodo = todoOptional.get();
+        if(currentTodo.getStatus().equals(TodoStatus.PAST_DUE)  ||
+                currentTodo.getDueDate().isBefore(LocalDateTime.now())){
+            throw new TodoCannotBeModifiedException(StatusCodes.PAST_TODO_CONNOT_MODIFY);
+        }
+        currentTodo.setDescription(updateTodoRequest.getDescription());
+        currentTodo = todoRepository.save(currentTodo);
+        return TodoDetails.fromEntity(currentTodo);
     }
 
     private void validateCreateRequest(CreateTodoRequest createTodoRequest){

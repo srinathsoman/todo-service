@@ -114,7 +114,7 @@ class TodoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("past due")));
+                .andExpect(content().string(containsString("Past due")));
     }
 
 

@@ -28,6 +28,6 @@ public class TodoController {
     @PutMapping("/{id}")
     public TodoDetails updateTodoDescription(@PathVariable UUID id,
                                              @RequestBody UpdateTodoRequest updateTodoRequest) {
-        return null;
+        return todoService.updateTodoDescription(id, updateTodoRequest);
     }
 }
