@@ -2,8 +2,13 @@ package com.srinath.todoservice.services;
 
 import com.srinath.todoservice.dtos.TodoDetails;
 import com.srinath.todoservice.requests.CreateTodoRequest;
+import com.srinath.todoservice.requests.UpdateTodoRequest;
+
+import java.util.UUID;
 
 public interface TodoService {
 
     TodoDetails createTodoItem(CreateTodoRequest createTodoRequest);
+
+    TodoDetails updateTodoDescription(UUID id, UpdateTodoRequest updateTodoRequest);
 }

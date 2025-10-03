@@ -1,6 +1,7 @@
 package com.srinath.todoservice.exceptions.handlers;
 
 import com.srinath.todoservice.exceptions.InvalidParameterException;
+import com.srinath.todoservice.exceptions.TodoCannotBeModifiedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +24,17 @@ public class ExceptionHandlerAdvice {
                         buildBody(InvalidParameterException.class.getSimpleName(),
                                 invalidParameterException.getStatusCode(),
                                 invalidParameterException.getStatusDescription()));
+    }
+
+    @ExceptionHandler(TodoCannotBeModifiedException.class)
+    public ResponseEntity<Object> handleTodoCannotBeModifiedException(
+            TodoCannotBeModifiedException todoCannotBeModifiedException) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_PROBLEM_JSON).body(
+                        buildBody(InvalidParameterException.class.getSimpleName(),
+                                todoCannotBeModifiedException.getStatusCode(),
+                                todoCannotBeModifiedException.getStatusDescription()));
     }
 
     private String buildBody(String title, String statusCode, String description) {

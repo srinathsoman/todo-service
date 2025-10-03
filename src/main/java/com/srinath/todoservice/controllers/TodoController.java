@@ -2,11 +2,14 @@ package com.srinath.todoservice.controllers;
 
 import com.srinath.todoservice.dtos.TodoDetails;
 import com.srinath.todoservice.requests.CreateTodoRequest;
+import com.srinath.todoservice.requests.UpdateTodoRequest;
 import com.srinath.todoservice.services.TodoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/todo")
@@ -14,10 +17,17 @@ import org.springframework.web.bind.annotation.*;
 public class TodoController {
 
     private final TodoService todoService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TodoDetails createTodoItem(@RequestBody @Valid CreateTodoRequest createTodoRequest){
+    public TodoDetails createTodoItem(@RequestBody @Valid CreateTodoRequest createTodoRequest) {
 
         return todoService.createTodoItem(createTodoRequest);
+    }
+
+    @PutMapping("/{id}")
+    public TodoDetails updateTodoDescription(@PathVariable UUID id,
+                                             @RequestBody UpdateTodoRequest updateTodoRequest) {
+        return null;
     }
 }
