@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -39,5 +40,11 @@ public class TodoController {
     @PatchMapping("/{id}/not-done")
     public TodoDetails markTodoAsNotDone(@PathVariable UUID id){
         return todoService.markTodoAsNotDone(id);
+    }
+
+    @GetMapping
+    public List<TodoDetails> getAllTodos(@RequestParam(value = "includeAll" , required = false)
+                                         Boolean includeAll){
+        return todoService.getAllTodos(includeAll);
     }
 }

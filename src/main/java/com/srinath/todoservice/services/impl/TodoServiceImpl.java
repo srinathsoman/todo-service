@@ -11,14 +11,12 @@ import com.srinath.todoservice.repositories.TodoRepository;
 import com.srinath.todoservice.requests.CreateTodoRequest;
 import com.srinath.todoservice.requests.UpdateTodoRequest;
 import com.srinath.todoservice.services.TodoService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -71,6 +69,15 @@ public class TodoServiceImpl implements TodoService {
         }
         //If item is already in desired state. Return gracefully without throwing error
         return TodoDetails.fromEntity(currentTodo);
+    }
+
+    @Override
+    public List<TodoDetails> getAllTodos(Boolean includeAll) {
+        if(Boolean.TRUE.equals(includeAll)){
+            return todoRepository.findAllByOrderByDueDateAsc().stream().map(TodoDetails::fromEntity).toList();
+        }
+        return todoRepository.findAllByStatusOrderByDueDateAsc(TodoStatus.NOT_DONE)
+                .stream().map(TodoDetails::fromEntity).toList();
     }
 
     private void validateCreateRequest(CreateTodoRequest createTodoRequest){
