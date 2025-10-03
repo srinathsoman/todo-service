@@ -152,6 +152,12 @@ class TodoControllerTest {
     }
 
     @Test
+    void testMarkTodoAsDone_NotFound() throws Exception {
+        mockMvc.perform(patch("/api/v1/todo/{id}/done", UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testMarkTodoAsNotDone_Success() throws Exception {
 
         testTodo.setStatus(TodoStatus.DONE);
@@ -163,6 +169,11 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.completedAt", nullValue()));
     }
 
+    @Test
+    void testMarkTodoAsNotDone_NotFound() throws Exception {
+        mockMvc.perform(patch("/api/v1/todo/{id}/not-done", UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     void testMarkTodoAsNotDone_PastDue() throws Exception {
