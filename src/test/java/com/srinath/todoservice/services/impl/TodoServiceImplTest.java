@@ -235,4 +235,45 @@ public class TodoServiceImplTest {
         verify(todoRepository).findById(any(UUID.class));
     }
 
+    @Test
+    void testUpdatePastDueTodos_WithTodosToUpdate() {
+
+        todo.setDueDate(LocalDateTime.now().minusDays(1));
+        List<Todo> pastDueTodos = Collections.singletonList(todo);
+        Todo updatedPastDueToDo=Todo.builder()
+                .id(UUID.randomUUID())
+                .description("Test Description")
+                .status(TodoStatus.PAST_DUE)
+                .createdAt(now)
+                .dueDate(LocalDateTime.now().minusDays(1))
+                .build();
+        List<Todo> updatedPastDueTodos = Collections.singletonList(updatedPastDueToDo);
+        when(todoRepository.findAllByDueDateBeforeAndStatusNot(any(LocalDateTime.class),
+                any(TodoStatus.class))).thenReturn(pastDueTodos);
+        when(todoRepository.saveAll(anyList())).thenReturn(updatedPastDueTodos);
+
+        todoService.updatePastDueTodos();
+
+        assertEquals(TodoStatus.PAST_DUE, updatedPastDueToDo.getStatus());
+        verify(todoRepository).findAllByDueDateBeforeAndStatusNot(any(LocalDateTime.class),
+                any(TodoStatus.class));
+        verify(todoRepository).saveAll(pastDueTodos);
+    }
+
+    @Test
+    void testUpdatePastDueTodos_WithNoTodosToUpdateShouldRunWithoutError() {
+
+        List<Todo> pastDueTodos = List.of();
+
+        when(todoRepository.findAllByDueDateBeforeAndStatusNot(any(LocalDateTime.class),
+                any(TodoStatus.class))).thenReturn(pastDueTodos);
+        when(todoRepository.saveAll(anyList())).thenReturn(pastDueTodos);
+
+        todoService.updatePastDueTodos();
+
+        verify(todoRepository).findAllByDueDateBeforeAndStatusNot(any(LocalDateTime.class),
+                any(TodoStatus.class));
+        verify(todoRepository).saveAll(pastDueTodos);
+    }
+
 }

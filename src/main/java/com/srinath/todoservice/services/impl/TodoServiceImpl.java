@@ -90,6 +90,14 @@ public class TodoServiceImpl implements TodoService {
         return TodoDetails.fromEntity(todoOptional.get());
     }
 
+    @Override
+    public void updatePastDueTodos() {
+        List<Todo> pastDueTodos = todoRepository.findAllByDueDateBeforeAndStatusNot(
+                LocalDateTime.now(),TodoStatus.PAST_DUE);
+        pastDueTodos.forEach(todo -> todo.setStatus(TodoStatus.PAST_DUE));
+        todoRepository.saveAll(pastDueTodos);
+    }
+
     private void validateCreateRequest(CreateTodoRequest createTodoRequest){
         if (createTodoRequest.getDescription() == null ||
                 createTodoRequest.getDescription().trim().isEmpty()) {
