@@ -43,13 +43,33 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoDetails updateTodoDescription(UUID id, UpdateTodoRequest updateTodoRequest) {
-        Todo currentTodo = todoRepository.findById(id)
-                .orElseThrow(() -> new TodoNotFoundException(StatusCodes.TODO_NOT_FOUND));
-        if(isPastDue(currentTodo)){
-            throw new TodoCannotBeModifiedException(StatusCodes.PAST_TODO_CONNOT_MODIFY);
-        }
+        Todo currentTodo = verifyAndGetTodoItemForUpdate(id);
         currentTodo.setDescription(updateTodoRequest.getDescription());
         currentTodo = todoRepository.save(currentTodo);
+        return TodoDetails.fromEntity(currentTodo);
+    }
+
+    @Override
+    public TodoDetails markTodoAsDone(UUID id) {
+        Todo currentTodo = verifyAndGetTodoItemForUpdate(id);
+        if(!currentTodo.getStatus().equals(TodoStatus.DONE)){
+            currentTodo.setStatus(TodoStatus.DONE);
+            currentTodo.setCompletedAt(LocalDateTime.now());
+            currentTodo = todoRepository.save(currentTodo);
+        }
+        //If item is already in desired state. Return gracefully without throwing error
+        return TodoDetails.fromEntity(currentTodo);
+    }
+
+    @Override
+    public TodoDetails markTodoAsNotDone(UUID id) {
+        Todo currentTodo = verifyAndGetTodoItemForUpdate(id);
+        if(!currentTodo.getStatus().equals(TodoStatus.NOT_DONE)){
+            currentTodo.setStatus(TodoStatus.NOT_DONE);
+            currentTodo.setCompletedAt(null);
+            currentTodo = todoRepository.save(currentTodo);
+        }
+        //If item is already in desired state. Return gracefully without throwing error
         return TodoDetails.fromEntity(currentTodo);
     }
 
@@ -68,5 +88,14 @@ public class TodoServiceImpl implements TodoService {
     private boolean isPastDue(Todo todo) {
         return todo.getStatus() == TodoStatus.PAST_DUE ||
                 todo.getDueDate().isBefore(LocalDateTime.now());
+    }
+
+    private Todo verifyAndGetTodoItemForUpdate(UUID id){
+        Todo currentTodo = todoRepository.findById(id)
+                .orElseThrow(() -> new TodoNotFoundException(StatusCodes.TODO_NOT_FOUND));
+        if(isPastDue(currentTodo)){
+            throw new TodoCannotBeModifiedException(StatusCodes.PAST_TODO_CONNOT_MODIFY);
+        }
+        return currentTodo;
     }
 }
