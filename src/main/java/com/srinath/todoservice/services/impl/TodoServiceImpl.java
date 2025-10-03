@@ -80,6 +80,11 @@ public class TodoServiceImpl implements TodoService {
                 .stream().map(TodoDetails::fromEntity).toList();
     }
 
+    @Override
+    public TodoDetails getTodoById(UUID id) {
+        return null;
+    }
+
     private void validateCreateRequest(CreateTodoRequest createTodoRequest){
         if (createTodoRequest.getDescription() == null ||
                 createTodoRequest.getDescription().trim().isEmpty()) {
