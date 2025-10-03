@@ -14,5 +14,6 @@ public interface TodoService {
     TodoDetails markTodoAsDone(UUID id);
     TodoDetails markTodoAsNotDone(UUID id);
     List<TodoDetails> getAllTodos(Boolean includeAll);
+    TodoDetails getTodoById(UUID id);
 
 }

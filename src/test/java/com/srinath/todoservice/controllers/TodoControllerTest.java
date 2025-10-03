@@ -246,4 +246,21 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$[0].status", is("not done")));
     }
 
+    @Test
+    void testGetTodoById_Success() throws Exception {
+        testTodo= todoRepository.save(testTodo);
+        mockMvc.perform(get("/api/v1/todo/{id}", testTodo.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(testTodo.getId().toString())))
+                .andExpect(jsonPath("$.description", is("Test Description")))
+                .andExpect(jsonPath("$.status", is("not done")));
+    }
+
+    @Test
+    void testGetTodoById_NotFound() throws Exception {
+        testTodo= todoRepository.save(testTodo);
+        mockMvc.perform(get("/api/v1/todo/{id}", UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
 }

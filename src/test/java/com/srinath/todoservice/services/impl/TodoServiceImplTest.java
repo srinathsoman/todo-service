@@ -190,11 +190,12 @@ public class TodoServiceImplTest {
 
     @Test
     void testGetAllTodos_IncludeAllFalse() {
+        //Arrange
         List<Todo> todos = Collections.singletonList(todo);
         when(todoRepository.findAllByStatusOrderByDueDateAsc(TodoStatus.NOT_DONE)).thenReturn(todos);
-
+        //Act
         List<TodoDetails> response = todoService.getAllTodos(false);
-
+        //Assert
         assertEquals(1, response.size());
         assertEquals(todo.getId(), response.get(0).id());
         verify(todoRepository).findAllByStatusOrderByDueDateAsc(TodoStatus.NOT_DONE);
@@ -202,14 +203,36 @@ public class TodoServiceImplTest {
 
     @Test
     void testGetAllTodos_IncludeAllTrue() {
+        //Arrange
         List<Todo> todos = Collections.singletonList(todo);
         when(todoRepository.findAllByOrderByDueDateAsc()).thenReturn(todos);
-
+        //Act
         List<TodoDetails> response = todoService.getAllTodos(true);
-
+        //Assert
         assertEquals(1, response.size());
         assertEquals(todo.getId(), response.get(0).id());
         verify(todoRepository).findAllByOrderByDueDateAsc();
+    }
+
+    @Test
+    void testGetTodoById_Success() {
+        //Arrange
+        when(todoRepository.findById(todo.getId())).thenReturn(Optional.of(todo));
+        //Act
+        TodoDetails response = todoService.getTodoById(todo.getId());
+        //Assert
+        assertNotNull(response);
+        assertEquals(todo.getId(), response.id());
+        verify(todoRepository).findById(todo.getId());
+    }
+
+    @Test
+    void testGetTodoById_NotFound() {
+        //Arrange
+        when(todoRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        //Act and Assert
+        assertThrows(TodoNotFoundException.class, () -> todoService.getTodoById(UUID.randomUUID()));
+        verify(todoRepository).findById(any(UUID.class));
     }
 
 }

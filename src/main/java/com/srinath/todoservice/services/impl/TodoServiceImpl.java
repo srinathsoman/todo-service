@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -78,6 +79,15 @@ public class TodoServiceImpl implements TodoService {
         }
         return todoRepository.findAllByStatusOrderByDueDateAsc(TodoStatus.NOT_DONE)
                 .stream().map(TodoDetails::fromEntity).toList();
+    }
+
+    @Override
+    public TodoDetails getTodoById(UUID id) {
+        Optional<Todo> todoOptional = todoRepository.findById(id);
+        if (todoOptional.isEmpty()){
+            throw new TodoNotFoundException(StatusCodes.TODO_NOT_FOUND);
+        }
+        return TodoDetails.fromEntity(todoOptional.get());
     }
 
     private void validateCreateRequest(CreateTodoRequest createTodoRequest){

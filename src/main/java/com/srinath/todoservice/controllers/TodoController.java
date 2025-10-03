@@ -47,4 +47,9 @@ public class TodoController {
                                          Boolean includeAll){
         return todoService.getAllTodos(includeAll);
     }
+
+    @GetMapping("/{id}")
+    public TodoDetails getTodoById(@PathVariable UUID id){
+        return todoService.getTodoById(id);
+    }
 }
