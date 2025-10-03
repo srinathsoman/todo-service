@@ -50,6 +50,6 @@ public class TodoController {
 
     @GetMapping("/{id}")
     public TodoDetails getTodoById(@PathVariable UUID id){
-        return null;
+        return todoService.getTodoById(id);
     }
 }
