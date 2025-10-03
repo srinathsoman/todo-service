@@ -206,7 +206,7 @@ class TodoControllerTest {
         mockMvc.perform(get("/api/v1/todo"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(testTodo.getId())))
+                .andExpect(jsonPath("$[0].id", is(testTodo.getId().toString())))
                 .andExpect(jsonPath("$[0].status", is("not done")));
     }
 
@@ -222,7 +222,7 @@ class TodoControllerTest {
         doneTodo = todoRepository.save(doneTodo);
         testTodo = todoRepository.save(testTodo);
 
-        mockMvc.perform(get("/api/v1/todo"))
+        mockMvc.perform(get("/api/v1/todo?includeAll=TRUE"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
     }

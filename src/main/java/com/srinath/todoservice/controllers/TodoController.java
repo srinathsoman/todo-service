@@ -45,6 +45,6 @@ public class TodoController {
     @GetMapping
     public List<TodoDetails> getAllTodos(@RequestParam(value = "includeAll" , required = false)
                                          Boolean includeAll){
-        return null;
+        return todoService.getAllTodos(includeAll);
     }
 }

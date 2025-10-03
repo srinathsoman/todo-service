@@ -17,10 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -193,7 +190,7 @@ public class TodoServiceImplTest {
 
     @Test
     void testGetAllTodos_IncludeAllFalse() {
-        List<Todo> todos = Arrays.asList(todo);
+        List<Todo> todos = Collections.singletonList(todo);
         when(todoRepository.findAllByStatus(TodoStatus.NOT_DONE)).thenReturn(todos);
 
         List<TodoDetails> response = todoService.getAllTodos(false);
@@ -205,14 +202,14 @@ public class TodoServiceImplTest {
 
     @Test
     void testGetAllTodos_IncludeAllTrue() {
-        List<Todo> todos = Arrays.asList(todo);
-        when(todoRepository.findAllByStatus(TodoStatus.DONE)).thenReturn(todos);
+        List<Todo> todos = Collections.singletonList(todo);
+        when(todoRepository.findAll()).thenReturn(todos);
 
         List<TodoDetails> response = todoService.getAllTodos(true);
 
         assertEquals(1, response.size());
         assertEquals(todo.getId(), response.get(0).id());
-        verify(todoRepository).findAllByStatus(TodoStatus.DONE);
+        verify(todoRepository).findAll();
     }
 
 }

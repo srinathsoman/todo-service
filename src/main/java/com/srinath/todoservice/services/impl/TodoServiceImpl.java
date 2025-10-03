@@ -76,7 +76,11 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public List<TodoDetails> getAllTodos(Boolean includeAll) {
-        return List.of();
+        if(Boolean.TRUE.equals(includeAll)){
+            return todoRepository.findAll().stream().map(TodoDetails::fromEntity).toList();
+        }
+        return todoRepository.findAllByStatus(TodoStatus.NOT_DONE)
+                .stream().map(TodoDetails::fromEntity).toList();
     }
 
     private void validateCreateRequest(CreateTodoRequest createTodoRequest){
