@@ -236,7 +236,7 @@ public class TodoServiceImplTest {
     }
 
     @Test
-    void testUpdatePastDueTodos() {
+    void testUpdatePastDueTodos_WithTodosToUpdate() {
 
         todo.setDueDate(LocalDateTime.now().minusDays(1));
         List<Todo> pastDueTodos = Collections.singletonList(todo);
@@ -255,6 +255,22 @@ public class TodoServiceImplTest {
         todoService.updatePastDueTodos();
 
         assertEquals(TodoStatus.PAST_DUE, updatedPastDueToDo.getStatus());
+        verify(todoRepository).findAllByDueDateBeforeAndStatusNot(any(LocalDateTime.class),
+                any(TodoStatus.class));
+        verify(todoRepository).saveAll(pastDueTodos);
+    }
+
+    @Test
+    void testUpdatePastDueTodos_WithNoTodosToUpdateShouldRunWithoutError() {
+
+        List<Todo> pastDueTodos = List.of();
+
+        when(todoRepository.findAllByDueDateBeforeAndStatusNot(any(LocalDateTime.class),
+                any(TodoStatus.class))).thenReturn(pastDueTodos);
+        when(todoRepository.saveAll(anyList())).thenReturn(pastDueTodos);
+
+        todoService.updatePastDueTodos();
+
         verify(todoRepository).findAllByDueDateBeforeAndStatusNot(any(LocalDateTime.class),
                 any(TodoStatus.class));
         verify(todoRepository).saveAll(pastDueTodos);
