@@ -148,7 +148,7 @@ class TodoControllerTest {
 
         mockMvc.perform(patch("/api/v1/todo/{id}/done", pastDueTodo.getId()))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("past due")));
+                .andExpect(content().string(containsString("Past due")));
     }
 
     @Test
@@ -177,7 +177,7 @@ class TodoControllerTest {
 
         mockMvc.perform(patch("/api/v1/todo/{id}/not-done", pastDueTodo.getId()))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("past due")));
+                .andExpect(content().string(containsString("Past due")));
     }
 
 

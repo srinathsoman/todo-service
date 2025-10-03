@@ -33,11 +33,11 @@ public class TodoController {
 
     @PatchMapping("/{id}/done")
     public TodoDetails markTodoAsDone(@PathVariable UUID id){
-        return null;
+        return todoService.markTodoAsDone(id);
     }
 
     @PatchMapping("/{id}/not-done")
     public TodoDetails markTodoAsNotDone(@PathVariable UUID id){
-        return null;
+        return todoService.markTodoAsNotDone(id);
     }
 }
