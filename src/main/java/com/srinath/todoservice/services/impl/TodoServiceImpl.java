@@ -90,6 +90,11 @@ public class TodoServiceImpl implements TodoService {
         return TodoDetails.fromEntity(todoOptional.get());
     }
 
+    @Override
+    public void updatePastDueTodos() {
+
+    }
+
     private void validateCreateRequest(CreateTodoRequest createTodoRequest){
         if (createTodoRequest.getDescription() == null ||
                 createTodoRequest.getDescription().trim().isEmpty()) {
