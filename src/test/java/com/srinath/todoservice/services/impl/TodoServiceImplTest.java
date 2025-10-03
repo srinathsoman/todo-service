@@ -5,6 +5,7 @@ import com.srinath.todoservice.entities.Todo;
 import com.srinath.todoservice.enums.TodoStatus;
 import com.srinath.todoservice.exceptions.InvalidParameterException;
 import com.srinath.todoservice.exceptions.TodoCannotBeModifiedException;
+import com.srinath.todoservice.exceptions.TodoNotFoundException;
 import com.srinath.todoservice.repositories.TodoRepository;
 import com.srinath.todoservice.requests.CreateTodoRequest;
 import com.srinath.todoservice.requests.UpdateTodoRequest;
@@ -123,5 +124,16 @@ public class TodoServiceImplTest {
         verify(todoRepository, never()).save(any(Todo.class));
     }
 
+    @Test
+    void testUpdateTodoDescription_TodoNotFound() {
+        //Arrange
+        when(todoRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+
+        //Act and Assert
+        assertThrows(TodoNotFoundException.class,
+                () -> todoService.updateTodoDescription(todo.getId(), updateTodoRequest));
+        verify(todoRepository).findById(todo.getId());
+        verify(todoRepository, never()).save(any(Todo.class));
+    }
 
 }

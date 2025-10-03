@@ -117,5 +117,14 @@ class TodoControllerTest {
                 .andExpect(content().string(containsString("Past due")));
     }
 
+    @Test
+    void testUpdateTodoDescription_NotFound() throws Exception {
 
+        UpdateTodoRequest request = new UpdateTodoRequest("Updated description");
+
+        mockMvc.perform(put("/api/v1/todo/{id}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+    }
 }

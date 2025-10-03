@@ -43,13 +43,9 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoDetails updateTodoDescription(UUID id, UpdateTodoRequest updateTodoRequest) {
-        Optional<Todo> todoOptional = todoRepository.findById(id);
-        if(todoOptional.isEmpty()){
-            throw new TodoNotFoundException(StatusCodes.TODO_NOT_FOUND);
-        }
-        Todo currentTodo = todoOptional.get();
-        if(currentTodo.getStatus().equals(TodoStatus.PAST_DUE)  ||
-                currentTodo.getDueDate().isBefore(LocalDateTime.now())){
+        Todo currentTodo = todoRepository.findById(id)
+                .orElseThrow(() -> new TodoNotFoundException(StatusCodes.TODO_NOT_FOUND));
+        if(isPastDue(currentTodo)){
             throw new TodoCannotBeModifiedException(StatusCodes.PAST_TODO_CONNOT_MODIFY);
         }
         currentTodo.setDescription(updateTodoRequest.getDescription());
@@ -67,5 +63,10 @@ public class TodoServiceImpl implements TodoService {
                 createTodoRequest.getDueDate().isBefore(LocalDateTime.now())) {
             throw new InvalidParameterException(StatusCodes.DUE_DATE_CANNOT_BE_PAST);
         }
+    }
+
+    private boolean isPastDue(Todo todo) {
+        return todo.getStatus() == TodoStatus.PAST_DUE ||
+                todo.getDueDate().isBefore(LocalDateTime.now());
     }
 }

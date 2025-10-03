@@ -27,7 +27,7 @@ public class TodoController {
 
     @PutMapping("/{id}")
     public TodoDetails updateTodoDescription(@PathVariable UUID id,
-                                             @RequestBody UpdateTodoRequest updateTodoRequest) {
+                                             @RequestBody @Valid UpdateTodoRequest updateTodoRequest) {
         return todoService.updateTodoDescription(id, updateTodoRequest);
     }
 }

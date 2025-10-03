@@ -42,7 +42,7 @@ public class ExceptionHandlerAdvice {
     public ResponseEntity<Object> handleTodoNotFoundException(
             TodoNotFoundException todoNotFoundException) {
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_PROBLEM_JSON).body(
                         buildBody(InvalidParameterException.class.getSimpleName(),
                                 todoNotFoundException.getStatusCode(),
