@@ -9,5 +9,6 @@ import java.util.UUID;
 
 public interface TodoRepository  extends JpaRepository<Todo, UUID> {
 
-    List<Todo> findAllByStatus(TodoStatus status);
+    List<Todo> findAllByStatusOrderByDueDateAsc(TodoStatus status);
+    List<Todo> findAllByOrderByDueDateAsc();
 }

@@ -191,25 +191,25 @@ public class TodoServiceImplTest {
     @Test
     void testGetAllTodos_IncludeAllFalse() {
         List<Todo> todos = Collections.singletonList(todo);
-        when(todoRepository.findAllByStatus(TodoStatus.NOT_DONE)).thenReturn(todos);
+        when(todoRepository.findAllByStatusOrderByDueDateAsc(TodoStatus.NOT_DONE)).thenReturn(todos);
 
         List<TodoDetails> response = todoService.getAllTodos(false);
 
         assertEquals(1, response.size());
         assertEquals(todo.getId(), response.get(0).id());
-        verify(todoRepository).findAllByStatus(TodoStatus.NOT_DONE);
+        verify(todoRepository).findAllByStatusOrderByDueDateAsc(TodoStatus.NOT_DONE);
     }
 
     @Test
     void testGetAllTodos_IncludeAllTrue() {
         List<Todo> todos = Collections.singletonList(todo);
-        when(todoRepository.findAll()).thenReturn(todos);
+        when(todoRepository.findAllByOrderByDueDateAsc()).thenReturn(todos);
 
         List<TodoDetails> response = todoService.getAllTodos(true);
 
         assertEquals(1, response.size());
         assertEquals(todo.getId(), response.get(0).id());
-        verify(todoRepository).findAll();
+        verify(todoRepository).findAllByOrderByDueDateAsc();
     }
 
 }
